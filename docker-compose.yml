@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  nginx:
+    build:
+      context: .
+    image: nginx:1.23.3
+    restart: always
+    networks:
+      app_net:
+        ipv4_address: 172.99.100.100
+    ports:
+      - "9103:80"
+    #      - "8443:443"
+    volumes:
+      - ./:/var/www/html/
+      - ./phpyunzhuanma/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./phpyunzhuanma/nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - php
+
+  php:
+    image: php:7.2.34-fpm-alpine3.12
+    #        build:
+    #            context: /Users/dannylee/Documents/works/railway-admin
+    #            dockerfile: ./phpyunzhuanma/phpfpm/Dockerfile
+    restart: always
+    volumes:
+      - ./:/var/www/html/
+      - ./phpyunzhuanma/phpfpm/php.ini:/usr/local/etc/php/php.ini
+      #      - ./phpyunzhuanma/phpfpm/conf.d/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+      - ./phpyunzhuanma/phpfpm/php-fpm.conf:/usr/local/etc/php-fpm.conf
+      - ./phpyunzhuanma/phpfpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      app_net:
+        ipv4_address: 172.99.100.110
+
+  #  CREATE USER 'root'@'%' IDENTIFIED BY 'fuck123sql';
+  #  GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+  #  FLUSH PRIVILEGES;
+  mysql:
+    image: bitnami/mysql:5.7.41
+#    volumes:
+      #      - ./mysql/my.cnf:/etc/my.cnf
+      #      - ./mysql/mysql-data:/var/lib/mysql
+      #      - ./phpyunzhuanma/mysql/bitnami.my.cnf:/opt/bitnami/mysql/conf/my.cnf
+#      - ./phpyunzhuanma/data/mysql-data:/bitnami/mysql/data
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'fuck123sql'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_MAX_CONNECTIONS: 200
+    #    command: --bind-address=0.0.0.0 # 允许任意 IP 地址访问
+    ports:
+      - "9100:3306"
+    user: root
+    networks:
+      app_net:
+        ipv4_address: 172.99.100.170
+
+volumes:
+  pgdata:
+  es_data:
+    driver: local
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.99.100.0/16

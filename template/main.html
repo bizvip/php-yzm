@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<meta http-equiv="X-UA-Compatible" content="IE=9">
+		<title>视频转码服务系统</title>
+		<link rel="stylesheet" type="text/css" href="<?=Web_Path?>packs/layui/css/layui.css">
+		<link rel="stylesheet" type="text/css" href="<?=Web_Path?>packs/public/css/common.css?v=1.1">
+		<link rel="stylesheet" type="text/css" href="<?=Web_Path?>packs/font/font.css">
+		<script src="<?=Web_Path?>packs/jquery/jquery.min.js"></script>
+		<script src="<?=Web_Path?>packs/layui/layui.js"></script>
+	</head>
+	<body style="padding: 10px;">
+        <table class="layui-table">
+            <colgroup>
+                <col width="140">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="2">网站基本信息</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>软件名称</td>
+                    <td>崇胜网络科技-视频转码服务系统</td>
+                </tr>
+                <tr>
+                    <td>允许上传最大值</td>
+                    <td><?=get_cfg_var("upload_max_filesize")?></td>
+                </tr>
+                <tr>
+                    <td>POST提交最大值</td>
+                    <td><?=get_cfg_var("post_max_size")?></td>
+                </tr>
+                <tr>
+                    <td>服务器IP</td>
+                    <td><?php if('/'==DIRECTORY_SEPARATOR){echo $_SERVER['SERVER_ADDR'];}else{echo gethostbyname($_SERVER['SERVER_NAME']);} ?></td>
+                </tr>
+            </tbody>
+        </table>
+		<table class="layui-table">
+            <colgroup>
+                <col width="140">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="2">开发团队</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>当前版本</td>
+                    <td>v1.1.6 _20191101</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>总 策 划</td>
+                    <td>&nbsp;桂林崇胜网络科技有限公司</td>
+                </tr>
+                <tr>
+                    <td>支持团队</td>
+                    <td>&nbsp;程开结、张仕龙、王震</td>
+                </tr>
+                <tr><td>软件授权</td><td>&nbsp;<font color=#080>开源版,无须授权!</font></td></tr>
+                <tr><td>官方网站</td><td>&nbsp;<a href="&#104;&#116;&#116;&#112;&#115;&#58;&#47;&#47;&#119;&#119;&#119;&#46;&#100;&#107;&#101;&#119;&#108;&#46;&#99;&#111;&#109;" target="_blank">&#104;&#116;&#116;&#112;&#115;&#58;&#47;&#47;&#119;&#119;&#119;&#46;&#100;&#107;&#101;&#119;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+            </tbody>
+        </table>
+        <table class="layui-table">
+            <colgroup>
+                <col width="140">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="2">官网最新公告</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td id="news_td">
+                <div id="ctcms_news">
+                    <i class="fa fa-spin fa-spinner colorl" style="font-size: 30px;"></i>
+                    <div style="display: inline-block;">云端加载中...</div>
+                </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#dqtime').html('&nbsp;&nbsp;（到期时间：'+parent.dqtime+'）');
+                $.getScript(parent.newlink+"?ac=main&ver=<?=$ver?>");
+            });
+            layui.use(['layer'], function(){
+                var layer = layui.layer;
+            });
+			var index = null;
+            function update(){
+            	index = layer.load(0, {shade: false});
+                $.get('<?=site_url('index/update')?>', function(data) {
+                    if(data == 'ok'){
+                        layer.msg('恭喜你，更新成功！',{icon:1});
+                        setTimeout(function(){
+                            parent.location.reload();
+                        },1500);
+                    }else{
+						layer.close(index);
+                        layer.msg(data,{icon:7});
+                    }
+                },'text');
+            }
+        </script>
+	</body>
+</html>
